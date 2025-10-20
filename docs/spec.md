@@ -80,6 +80,8 @@ A rendszer **React + Next.js + TypeScript** technológiákra épül, a backend *
 | Hitelesítés | Firebase Auth / OAuth2     | Google-fiókos belépés                              | Smuk Ferenc        |
 | Fájlkezelés | Firebase Storage / AWS S3  | Képfeltöltés                                       | Smuk Ferenc        |
 
+<br><br><br><br><br><br><br><br>
+
 **Fejlesztési környezet:**
 
 - Git verziókezelés (GitHub repository)
@@ -132,8 +134,10 @@ A rendszer **React + Next.js + TypeScript** technológiákra épül, a backend *
 
 ---
 
+<br><br><br><br><br><br><br><br>
+
 ## 5. Esszenciális use-case-ek
 
 ### 5.1. Use-case diagram
 
-![Use-case diagram](usecase1.png)
+![Use-case diagram](usecase1.jpg)
