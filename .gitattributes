@@ -1,0 +1,35 @@
+# 1. Alapbeállítás: Minden szöveges fájl legyen LF (Linux/Mac stílus)
+* text=auto eol=lf
+
+# 2. Képek (Binárisak, ne nyúljon hozzá a Git)
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.svg text  # KIVÉTEL! Az SVG valójában kód (XML), azt kezelje szövegként!
+
+# 3. Dokumentumok (Itt a PDF és az Office fájlok)
+*.pdf binary
+*.doc binary
+*.docx binary
+*.xls binary
+*.xlsx binary
+*.ppt binary
+*.pptx binary
+
+# 4. Fontok
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.otf binary
+*.eot binary
+
+# 5. Egyéb binárisok (Archívumok, stb.)
+*.zip binary
+*.tar.gz binary
+*.rar binary
+*.7z binary
+*.exe binary
+*.dll binary
