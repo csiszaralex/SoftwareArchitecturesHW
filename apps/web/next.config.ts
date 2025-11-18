@@ -1,8 +1,10 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-  /* config options here */
   reactCompiler: true,
+  typedRoutes: true,
+  transpilePackages: ['@parking/schema'],
 };
 
 export default nextConfig;
+
