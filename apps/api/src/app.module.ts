@@ -3,10 +3,11 @@ import { ConfigModule } from '@nestjs/config';
 import { LoggerModule } from 'nestjs-pino';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { AppConfigModule } from './common/configs/appConfig.module';
-import { AppConfigService } from './common/configs/appConfig.service';
+import { AppConfigModule } from './common/configs/app-config.module';
+import { AppConfigService } from './common/configs/app-config.service';
 import { envSchema } from './common/configs/env.validation';
 import { PrismaModule } from './common/prisma/prisma.module';
+import { ParkingSpotsModule } from './parking-spots/parking-spots.module';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { PrismaModule } from './common/prisma/prisma.module';
     }),
     PrismaModule,
     AppConfigModule,
+    ParkingSpotsModule,
   ],
   controllers: [AppController],
   providers: [AppService, AppConfigService],

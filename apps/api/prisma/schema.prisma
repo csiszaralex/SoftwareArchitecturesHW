@@ -7,8 +7,72 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Role {
+  USER
+  ADMIN
+}
+
+enum ParkingCategory {
+  FREE
+  PAID
+  P_PLUS_R
+  GARAGE
+  STREET
+}
+
 model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
+  id              String           @id @default(uuid())
+  email           String           @unique
+  name            String?
+  picture         String?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  role            Role             @default(USER)
+  createdSpots    ParkingSpot[]    @relation("UserCreatedSpots")
+  reviews         Review[]
+  parkingSessions ParkingSession[]
+}
+
+model ParkingSpot {
+  id          String          @id @default(uuid())
+  name        String
+  description String?
+  address     String
+  lat         Float
+  lng         Float
+  category    ParkingCategory
+  images      String[]
+  rating      Float           @default(0)
+  reviewCount Int             @default(0)
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  creatorId   String
+  creator     User            @relation("UserCreatedSpots", fields: [creatorId], references: [id])
+  reviews     Review[]
+
+  @@index([lat, lng])
+}
+
+model Review {
+  id        String      @id @default(uuid())
+  rating    Int
+  comment   String?
+  createdAt DateTime    @default(now())
+  userId    String
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  spotId    String
+  spot      ParkingSpot @relation(fields: [spotId], references: [id], onDelete: Cascade)
+}
+
+model ParkingSession {
+  id        String    @id @default(uuid())
+  lat       Float
+  lng       Float
+  address   String?
+  notes     String?
+  startedAt DateTime  @default(now())
+  endsAt    DateTime?
+  isActive  Boolean   @default(true)
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

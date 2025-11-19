@@ -9,7 +9,7 @@ import {
 import { Logger } from 'nestjs-pino';
 import { ZodValidationPipe } from 'nestjs-zod';
 import { AppModule } from './app.module';
-import { AppConfigService } from './common/configs/appConfig.service';
+import { AppConfigService } from './common/configs/app-config.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { bufferLogs: true });
