@@ -1,4 +1,5 @@
-import { ThemeProvider } from '@/components/theme-provider';
+import { QueryProvider } from '@/components/providers/query-provider';
+import { ThemeProvider } from '@/components/theme/theme-provider';
 import type { Metadata } from 'next';
 import './globals.css';
 
@@ -15,13 +16,15 @@ export default function RootLayout({
   return (
     <html lang="hu" suppressHydrationWarning>
       <body className="antialiased">
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange>
-          {children}
-        </ThemeProvider>
+        <QueryProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange>
+            {children}
+          </ThemeProvider>
+        </QueryProvider>
       </body>
     </html>
   );

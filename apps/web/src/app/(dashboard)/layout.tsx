@@ -1,5 +1,5 @@
 import { AppSidebar } from '@/components/app-sidebar';
-import { ModeToggle } from '@/components/mode-toggle';
+import { ModeToggle } from '@/components/theme/mode-toggle';
 import { Separator } from '@/components/ui/separator';
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 

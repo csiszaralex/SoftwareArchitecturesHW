@@ -24,3 +24,16 @@ export const SearchParkingSpotSchema = z
     message: 'Vagy mindkét koordinátát add meg, vagy egyiket sem!',
   });
 export type SearchParkingSpotInput = z.infer<typeof SearchParkingSpotSchema>;
+
+//TODO: ujragondolni ez kell-e
+export interface ParkingSpotResponse {
+  id: string;
+  name: string;
+  description?: string | null;
+  address: string;
+  lat: number;
+  lng: number;
+  category: 'FREE' | 'PAID' | 'P_PLUS_R' | 'GARAGE' | 'STREET';
+  images: string[];
+  distance?: number; // Ez az extra mező a geokeresésnél
+}
