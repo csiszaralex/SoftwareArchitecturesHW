@@ -15,6 +15,7 @@ import Map, {
 } from 'react-map-gl/mapbox';
 
 const INITIAL_VIEW_STATE = {
+  //TODO: Ezt később a felhasználó helyéhez igazíthatjuk
   latitude: 47.4979,
   longitude: 19.0402,
   zoom: 12,

@@ -1,5 +1,7 @@
 'use client';
 
+import { ActiveSessionOverlay } from '@/components/parking/active-session-overlay';
+import { StartParkingButton } from '@/components/parking/start-parking-button';
 import { Skeleton } from '@/components/ui/skeleton';
 import dynamic from 'next/dynamic';
 
@@ -14,10 +16,10 @@ const Map = dynamic(() => import('@/components/map/mapbox-map'), {
 
 export default function MapPage() {
   return (
-    // JAVÍTÁS: Nem calc(), hanem flex-grow.
-    // A 'min-h-0' trükk fontos flex childoknál, hogy ne lógjon túl!
     <div className="flex-1 min-h-0 w-full rounded-xl overflow-hidden border border-border relative">
       <Map />
+      <ActiveSessionOverlay />
+      <StartParkingButton />
     </div>
   );
 }
