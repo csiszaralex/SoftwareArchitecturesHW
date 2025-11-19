@@ -67,3 +67,6 @@ next-env.d.ts
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+
+# --- Secret Files ---
+firebase-admin-sdk.json
