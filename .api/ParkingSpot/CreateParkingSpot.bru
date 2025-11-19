@@ -6,10 +6,19 @@ meta {
 
 post {
   url: {{url}}/parking-spots
-  body: none
+  body: formUrlEncoded
   auth: inherit
+}
+
+body:form-urlencoded {
+  name: Test
+  address: Valahol
+  lat: 1
+  lng: 2
+  category: FREE
 }
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

@@ -5,9 +5,15 @@ meta {
 }
 
 get {
-  url: {{url}}/parking-spots
+  url: {{url}}/parking-spots?lat=90&lng=180
   body: none
   auth: inherit
+}
+
+params:query {
+  lat: 90
+  lng: 180
+  ~radius: 1
 }
 
 settings {

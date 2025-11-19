@@ -1,0 +1,24 @@
+meta {
+  name: UploadFile
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{url}}/uploads
+  body: multipartForm
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhOTI1OTAwNi1jYTgzLTQ3OTQtYTBiZS1lZTI4NjY4MTYzNWEiLCJlbWFpbCI6ImNzaXN6YXJhbGV4QGdtYWlsLmNvbSIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzYzNTI3NzA1LCJleHAiOjE3NjQxMzI1MDV9.CVPsk_VhhqLBhiqj9QgqiCpdwqgSi_e4L91e95IpdSM
+}
+
+body:multipart-form {
+  file: @file(C:\Users\csisz\Pictures\Screenshots\B.png)
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
