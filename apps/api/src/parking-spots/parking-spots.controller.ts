@@ -1,9 +1,10 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import type { User } from '@prisma/client';
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 import { CreateParkingSpotDto } from './dto/create-parking-spot.dto';
+import { SearchParkingSpotDto } from './dto/search-parking-spot.dto';
 import { ParkingSpotsService } from './parking-spots.service';
 
 @Controller('parking-spots')
@@ -20,9 +21,9 @@ export class ParkingSpotsController {
   }
 
   @Get()
-  @ApiOperation({ summary: 'Összes parkoló listázása' })
-  findAll() {
-    return this.parkingSpotsService.findAll();
+  @ApiOperation({ summary: 'Parkolók listázása (opcionálisan távolság alapján)' })
+  findAll(@Query() query: SearchParkingSpotDto) {
+    return this.parkingSpotsService.findAll(query);
   }
 
   @Get(':id')
