@@ -9,4 +9,8 @@ export class AppConfigService {
   get<T extends keyof EnvConfig>(key: T): EnvConfig[T] {
     return this.configService.get(key, { infer: true });
   }
+
+  get isProduction(): boolean {
+    return this.get('NODE_ENV') === 'production';
+  }
 }
