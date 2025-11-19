@@ -6,22 +6,18 @@ import { CreateParkingSpotDto } from './dto/create-parking-spot.dto';
 export class ParkingSpotsService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(createParkingSpotDto: CreateParkingSpotDto) {
-    const firstUser = await this.prisma.user.findFirst();
-
-    if (!firstUser) throw new Error('Nincs User az adatbázisban! Futtass Seed-et!');
-
+  async create(createParkingSpotDto: CreateParkingSpotDto, userId: string) {
     return this.prisma.parkingSpot.create({
       data: {
         ...createParkingSpotDto,
-        creatorId: firstUser.id,
+        creatorId: userId,
       },
     });
   }
 
   findAll() {
     return this.prisma.parkingSpot.findMany({
-      include: { creator: { select: { name: true } } },
+      include: { creator: { select: { name: true, picture: true } } },
       orderBy: { createdAt: 'desc' },
     });
   }

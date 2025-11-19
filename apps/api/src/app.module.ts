@@ -8,6 +8,7 @@ import { AppConfigService } from './common/configs/app-config.service';
 import { envSchema } from './common/configs/env.validation';
 import { PrismaModule } from './common/prisma/prisma.module';
 import { ParkingSpotsModule } from './parking-spots/parking-spots.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { ParkingSpotsModule } from './parking-spots/parking-spots.module';
     PrismaModule,
     AppConfigModule,
     ParkingSpotsModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService, AppConfigService],
