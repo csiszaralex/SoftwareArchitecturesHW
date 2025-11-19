@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { Controller, Get, Req, Res, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import type { Response } from 'express';
 import { AppConfigService } from 'src/common/configs/app-config.service';
 import { AuthService } from './auth.service';
-import type { Response } from 'express';
 
 @Controller('auth')
 export class AuthController {

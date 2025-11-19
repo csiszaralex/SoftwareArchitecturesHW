@@ -12,7 +12,6 @@ export class ImageFileValidator extends FileValidator {
   isValid(file: Express.Multer.File): boolean {
     const allowedMimeTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/jpg'];
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    return allowedMimeTypes.includes(file.mimetype as string);
+    return allowedMimeTypes.includes(file.mimetype);
   }
 }
