@@ -21,7 +21,10 @@ async function bootstrap() {
   app.useGlobalPipes(new ZodValidationPipe());
 
   CreateSwagger(app);
-  app.enableCors();
+  app.enableCors({
+    origin: configService.get('FRONTEND_URL'),
+    credentials: true,
+  });
   await app.listen(port);
 }
 
