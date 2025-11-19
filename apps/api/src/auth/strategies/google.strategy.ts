@@ -2,14 +2,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Profile, Strategy, VerifyCallback } from 'passport-google-oauth20';
 import { AppConfigService } from '../../common/configs/app-config.service';
-
-export interface GoogleUser {
-  email: string;
-  firstName: string;
-  lastName: string;
-  picture?: string;
-  accessToken: string;
-}
+import { GoogleUser } from '../interfaces/google-user.interface';
 
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
