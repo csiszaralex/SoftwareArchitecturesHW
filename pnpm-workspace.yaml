@@ -4,4 +4,11 @@ packages:
 
 onlyBuiltDependencies:
   - '@firebase/util'
+  - '@nestjs/core'
+  - '@prisma/client'
+  - '@prisma/engines'
+  - '@scarf/scarf'
+  - prisma
   - protobufjs
+  - sharp
+  - unrs-resolver
