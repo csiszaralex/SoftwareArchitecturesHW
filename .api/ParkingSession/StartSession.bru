@@ -1,0 +1,26 @@
+meta {
+  name: StartSession
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{url}}/parking-sessions/start
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "lat": 5,
+    "lng": 5,
+    "address": "1111 Bp",
+    "notes": "A fa alatt",
+    "endsAt": "2025-11-19T15:59:39Z"  
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

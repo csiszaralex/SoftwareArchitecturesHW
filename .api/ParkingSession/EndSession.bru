@@ -1,0 +1,16 @@
+meta {
+  name: EndSession
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{url}}/parking-sessions/end
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
