@@ -19,7 +19,7 @@ export const SearchParkingSpotSchema = z
     // coordinates or
     lat: z.coerce.number().min(-90).max(90).optional(),
     lng: z.coerce.number().min(-180).max(180).optional(),
-    radius: z.coerce.number().positive().default(1000),
+    radius: z.coerce.number().min(0).default(0),
     // search term or
     searchTerm: z.string().optional(),
     // category filter

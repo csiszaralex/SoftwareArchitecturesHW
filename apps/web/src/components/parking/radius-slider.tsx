@@ -13,12 +13,14 @@ export function RadiusSlider({ value, onChange }: RadiusSliderProps) {
     <div className="space-y-2 pt-2">
       <Label className="text-sm font-medium leading-none flex justify-between">
         Keresési sugár
-        <span className="font-semibold text-primary">{value / 1000} km</span>
+        <span className="font-semibold text-primary">
+          {value === 0 ? '- km' : `${value / 1000} km`}
+        </span>
       </Label>
       <Slider
         defaultValue={[value]}
         max={50000} // Max 50 km
-        min={500} // Min 500 m
+        min={0} // Min 500 m
         step={500}
         onValueChange={val => onChange(val[0])}
         className="w-full"

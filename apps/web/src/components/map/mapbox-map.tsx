@@ -1,5 +1,6 @@
 'use client';
 
+import { calculateDistanceInMeters, formatDistance } from '@/lib/geo-utils';
 import type { ParkingSpotResponse } from '@parking/schema';
 import { MapPin } from 'lucide-react';
 import 'mapbox-gl/dist/mapbox-gl.css';
@@ -28,9 +29,10 @@ interface MapProps {
   isLoading?: boolean;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onMoveEnd: (viewState: any) => void;
+  userLocation?: { lat: number; lng: number } | null;
 }
 
-export default function MapboxMap({ spots, isLoading, onMoveEnd }: MapProps) {
+export default function MapboxMap({ spots, isLoading, onMoveEnd, userLocation }: MapProps) {
   const { resolvedTheme } = useTheme();
 
   // Referenciák az átméretezéshez
@@ -75,6 +77,15 @@ export default function MapboxMap({ spots, isLoading, onMoveEnd }: MapProps) {
         <GeolocateControl position="top-left" />
         <NavigationControl position="top-left" showCompass={true} />
 
+        {userLocation && (
+          <Marker latitude={userLocation.lat} longitude={userLocation.lng}>
+            <span className="relative flex h-4 w-4">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-4 w-4 bg-blue-500 border-2 border-white shadow-md"></span>
+            </span>
+          </Marker>
+        )}
+
         {/* Valódi adatok renderelése */}
         {spots?.map(spot => (
           <Marker
@@ -110,10 +121,26 @@ export default function MapboxMap({ spots, isLoading, onMoveEnd }: MapProps) {
                   {spotCategoryLabel(popupInfo.category)}
                 </span>
                 {/* Távolság megjelenítése, ha van */}
-                {popupInfo.distance !== undefined && (
+                {userLocation ? (
+                  // Ha van user location, akkor a valós távolságot számoljuk
                   <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-50 text-blue-600 border border-blue-100">
-                    {Math.round((popupInfo.distance / 1000) * 10) / 10} km
+                    📍{' '}
+                    {formatDistance(
+                      calculateDistanceInMeters(
+                        userLocation.lat,
+                        userLocation.lng,
+                        popupInfo.lat,
+                        popupInfo.lng,
+                      ),
+                    )}
                   </span>
+                ) : (
+                  // Fallback: Ha nincs GPS, marad a backend által küldött "kereséstől való távolság" (vagy semmi)
+                  popupInfo.distance !== undefined && (
+                    <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-50 text-blue-600 border border-blue-100">
+                      🎯 ~{formatDistance(popupInfo.distance)}
+                    </span>
+                  )
                 )}
                 <NavigationButton lat={popupInfo.lat} lng={popupInfo.lng} />
               </div>

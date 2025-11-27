@@ -4,10 +4,11 @@ import { ActiveSessionOverlay } from '@/components/parking/active-session-overla
 import { SearchAndFilterBar } from '@/components/parking/search-and-filter-bar';
 import { StartParkingButton } from '@/components/parking/start-parking-button';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useGeolocation } from '@/hooks/use-geolocation';
 import { useParkingSpots } from '@/hooks/use-parking-spots';
 import { SearchParkingSpotInput } from '@parking/schema';
 import dynamic from 'next/dynamic';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 const Map = dynamic(() => import('@/components/map/mapbox-map'), {
   ssr: false,
@@ -19,7 +20,6 @@ const Map = dynamic(() => import('@/components/map/mapbox-map'), {
 });
 
 export default function MapPage() {
-  const [searchTerm, setSearchTerm] = useState('');
   const [searchParams, setSearchParams] = useState<SearchParkingSpotInput>({
     lat: 47.4979, // Kezdeti középpont
     lng: 19.0402,
@@ -27,6 +27,21 @@ export default function MapPage() {
     searchTerm: undefined,
     category: undefined,
   });
+  const location = useGeolocation();
+
+  const hasCenteredRef = useRef(false);
+  useEffect(() => {
+    if (location.isReady && location.isAvailable && !hasCenteredRef.current) {
+      setTimeout(() => {
+        setSearchParams(prev => ({
+          ...prev,
+          lat: location.lat,
+          lng: location.lng,
+        }));
+        hasCenteredRef.current = true;
+      }, 0);
+    }
+  }, [location.isReady, location.isAvailable, location.lat, location.lng]);
 
   const { data: spots, isLoading, isError } = useParkingSpots(searchParams);
 
@@ -47,7 +62,12 @@ export default function MapPage() {
     <div className="flex-1 min-h-0 w-full rounded-xl overflow-hidden border border-border relative">
       <SearchAndFilterBar searchState={searchParams} onSearchChange={handleSearchChange} />
 
-      <Map spots={spots} isLoading={isLoading} onMoveEnd={handleMapMoveEnd} />
+      <Map
+        spots={spots}
+        isLoading={isLoading}
+        onMoveEnd={handleMapMoveEnd}
+        userLocation={location.isAvailable ? { lat: location.lat, lng: location.lng } : null}
+      />
       <ActiveSessionOverlay />
       <StartParkingButton />
     </div>

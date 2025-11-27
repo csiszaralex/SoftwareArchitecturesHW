@@ -35,6 +35,18 @@ export class ParkingSpotsService {
 
     if (lat && lng) {
       const rawWhereClause = this.buildRawWhereClause(searchTerm, category);
+
+      const radiusFilter =
+        radius && radius > 0
+          ? Prisma.sql`(
+            6371000 * acos(
+              cos(radians(${lat})) * cos(radians(lat)) *
+              cos(radians(lng) - radians(${lng})) +
+              sin(radians(${lat})) * sin(radians(lat))
+            )
+          ) < ${radius}`
+          : Prisma.empty;
+
       const spots: ParkingSpotWithDistance[] = await this.prisma.$queryRaw`
         SELECT
           id, name, description, address, lat, lng, category, images, "createdAt", "creatorId",
@@ -46,13 +58,9 @@ export class ParkingSpotsService {
             )
           ) AS distance
         FROM "ParkingSpot"
-        WHERE (
-          6371000 * acos(
-            cos(radians(${lat})) * cos(radians(lat)) *
-            cos(radians(lng) - radians(${lng})) +
-            sin(radians(${lat})) * sin(radians(lat))
-          )
-        ) < ${radius}
+        ${radiusFilter !== Prisma.empty || rawWhereClause !== Prisma.empty ? Prisma.sql`WHERE` : Prisma.empty}
+        ${radiusFilter}
+        ${radiusFilter !== Prisma.empty && rawWhereClause !== Prisma.empty ? Prisma.sql`AND` : Prisma.empty}
         ${rawWhereClause}
         ORDER BY distance ASC
       `;
@@ -70,17 +78,17 @@ export class ParkingSpotsService {
 
     if (searchTerm) {
       filters.push(Prisma.sql`
-        AND ("name" ILIKE ${'%' + searchTerm + '%'} OR "address" ILIKE ${'%' + searchTerm + '%'})
+        ("name" ILIKE ${'%' + searchTerm + '%'} OR "address" ILIKE ${'%' + searchTerm + '%'})
       `);
     }
 
     if (category) {
       filters.push(Prisma.sql`
-        AND "category" = ${category}::"ParkingCategory"
+        "category" = ${category}::"ParkingCategory"
       `);
     }
 
-    return filters.length > 0 ? Prisma.sql`${Prisma.join(filters, ' ')}` : Prisma.empty;
+    return filters.length > 0 ? Prisma.sql`${Prisma.join(filters, ' AND ')}` : Prisma.empty;
   }
 
   findOne(id: string) {
