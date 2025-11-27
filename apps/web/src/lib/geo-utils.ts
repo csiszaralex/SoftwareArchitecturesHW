@@ -26,3 +26,25 @@ export function formatDistance(meters: number): string {
   }
   return `${(meters / 1000).toFixed(1)} km`;
 }
+
+export function openNavigationApp(lat: number, lng: number) {
+  // Ellenőrzés, hogy böngészőben vagyunk-e (SSR védelem)
+  if (typeof window === 'undefined') return;
+  const userAgent = navigator.userAgent || navigator.vendor || (window as any).opera;
+
+  // iOS detektálás
+  if (/iPad|iPhone|iPod/.test(userAgent) && !(window as any).MSStream) {
+    window.open(`http://maps.apple.com/?daddr=${lat},${lng}&dirflg=d`, '_system');
+  }
+  // Android detektálás
+  else if (/android/i.test(userAgent)) {
+    window.location.href = `geo:${lat},${lng}?q=${lat},${lng}`;
+  }
+  // Desktop / Egyéb fallback
+  else {
+    window.open(
+      `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}&travelmode=driving`,
+      '_blank',
+    );
+  }
+}

@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useActiveSession } from '@/hooks/use-active-session';
 import { useEndParking } from '@/hooks/use-end-parking';
+import { openNavigationApp } from '@/lib/geo-utils';
 import { cn } from '@/lib/utils';
 import { Duration, formatDuration, intervalToDuration } from 'date-fns';
 import { Car, Loader2, Timer } from 'lucide-react';
@@ -55,6 +56,11 @@ export function ActiveSessionOverlay() {
     );
   }
 
+  const handleNavigateBack = () => {
+    if (!session) return;
+    openNavigationApp(session.lat, session.lng);
+  };
+
   return (
     <div className="absolute bottom-4 right-4 z-40">
       <Card
@@ -84,7 +90,13 @@ export function ActiveSessionOverlay() {
 
           {/* Akciók */}
           <div className="flex gap-2">
-            <Button size="sm" variant="secondary" className="flex-1" disabled={isEnding}>
+            <Button
+              size="sm"
+              variant="secondary"
+              className="flex-1 bg-blue-100 hover:bg-blue-200 text-blue-700 border border-blue-200"
+              onClick={handleNavigateBack}
+              disabled={isEnding}>
+              <Car className="w-4 h-4 mr-2" />
               Visszanavigálás
             </Button>
             <Button size="sm" className="flex-1" onClick={() => endParking()} disabled={isEnding}>

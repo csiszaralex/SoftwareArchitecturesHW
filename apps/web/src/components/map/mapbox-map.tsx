@@ -14,6 +14,7 @@ import Map, {
   Popup,
 } from 'react-map-gl/mapbox';
 import NavigationButton from './navigation-button';
+import { ActiveSessionMarker } from '../parking/active-session-marker';
 
 const INITIAL_VIEW_STATE = {
   //TODO: Ezt később a felhasználó helyéhez igazíthatjuk
@@ -103,6 +104,7 @@ export default function MapboxMap({ spots, isLoading, onMoveEnd, userLocation }:
             </div>
           </Marker>
         ))}
+        <ActiveSessionMarker />
 
         {popupInfo && (
           <Popup
