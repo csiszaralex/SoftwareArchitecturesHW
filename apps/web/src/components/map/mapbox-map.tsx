@@ -1,6 +1,5 @@
 'use client';
 
-import { useParkingSpots } from '@/hooks/use-parking-spots';
 import type { ParkingSpotResponse } from '@parking/schema';
 import { MapPin } from 'lucide-react';
 import 'mapbox-gl/dist/mapbox-gl.css';
@@ -23,14 +22,20 @@ const INITIAL_VIEW_STATE = {
   pitch: 0,
 };
 
-export default function MapboxMap() {
+interface MapProps {
+  spots?: ParkingSpotResponse[] | null;
+  isLoading?: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  onMoveEnd: (viewState: any) => void;
+}
+
+export default function MapboxMap({ spots, isLoading, onMoveEnd }: MapProps) {
   const { resolvedTheme } = useTheme();
 
   // Referenciák az átméretezéshez
   const mapRef = React.useRef<MapRef>(null);
   const mapContainerRef = React.useRef<HTMLDivElement>(null);
 
-  const { data: spots, isLoading, isError } = useParkingSpots();
   const [popupInfo, setPopupInfo] = React.useState<ParkingSpotResponse | null>(null);
 
   // ResizeObserver: Figyeli a Sidebar csukódását és frissíti a térképet
@@ -63,6 +68,7 @@ export default function MapboxMap() {
         initialViewState={INITIAL_VIEW_STATE}
         mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_TOKEN}
         mapStyle={mapStyle}
+        onMoveEnd={onMoveEnd}
         attributionControl={false}
         reuseMaps>
         <GeolocateControl position="top-left" />

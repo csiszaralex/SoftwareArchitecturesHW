@@ -16,9 +16,14 @@ export type CreateParkingSpotInput = z.infer<typeof CreateParkingSpotSchema>;
 
 export const SearchParkingSpotSchema = z
   .object({
+    // coordinates or
     lat: z.coerce.number().min(-90).max(90).optional(),
     lng: z.coerce.number().min(-180).max(180).optional(),
     radius: z.coerce.number().positive().default(1000),
+    // search term or
+    searchTerm: z.string().optional(),
+    // category filter
+    category: ParkingCategorySchema.optional(),
   })
   .refine(data => (data.lat && data.lng) || (!data.lat && !data.lng), {
     message: 'Vagy mindkét koordinátát add meg, vagy egyiket sem!',
