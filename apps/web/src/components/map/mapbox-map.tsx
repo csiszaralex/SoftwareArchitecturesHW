@@ -12,6 +12,7 @@ import Map, {
   NavigationControl,
   Popup,
 } from 'react-map-gl/mapbox';
+import NavigationButton from './navigation-button';
 
 const INITIAL_VIEW_STATE = {
   //TODO: Ezt később a felhasználó helyéhez igazíthatjuk
@@ -114,6 +115,7 @@ export default function MapboxMap({ spots, isLoading, onMoveEnd }: MapProps) {
                     {Math.round((popupInfo.distance / 1000) * 10) / 10} km
                   </span>
                 )}
+                <NavigationButton lat={popupInfo.lat} lng={popupInfo.lng} />
               </div>
 
               <p className="text-xs text-muted-foreground mb-1">{popupInfo.address}</p>
