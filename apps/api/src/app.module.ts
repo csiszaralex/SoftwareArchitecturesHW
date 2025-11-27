@@ -11,6 +11,8 @@ import { ParkingSpotsModule } from './parking-spots/parking-spots.module';
 import { AuthModule } from './auth/auth.module';
 import { UploadsModule } from './uploads/uploads.module';
 import { ParkingSessionsModule } from './parking-sessions/parking-sessions.module';
+import { NotificationsModule } from './notifications/notifications.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -18,6 +20,7 @@ import { ParkingSessionsModule } from './parking-sessions/parking-sessions.modul
       envFilePath: `.env`,
       validate: config => envSchema.parse(config),
     }),
+    ScheduleModule.forRoot(),
     LoggerModule.forRootAsync({
       imports: [AppConfigModule],
       inject: [AppConfigService],
@@ -47,6 +50,7 @@ import { ParkingSessionsModule } from './parking-sessions/parking-sessions.modul
     AuthModule,
     UploadsModule,
     ParkingSessionsModule,
+    NotificationsModule,
   ],
   controllers: [AppController],
   providers: [AppService, AppConfigService],

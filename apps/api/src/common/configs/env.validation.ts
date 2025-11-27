@@ -11,6 +11,9 @@ export const envSchema = z.object({
   FRONTEND_URL: z.url(),
   FIREBASE_STORAGE_BUCKET: z.string(),
   GOOGLE_APPLICATION_CREDENTIALS: z.string(),
+  VAPID_PUBLIC_KEY: z.string().min(10),
+  VAPID_PRIVATE_KEY: z.string().min(10),
+  VAPID_SUBJECT: z.url().or(z.email()),
 });
 
 export type EnvConfig = z.infer<typeof envSchema>;

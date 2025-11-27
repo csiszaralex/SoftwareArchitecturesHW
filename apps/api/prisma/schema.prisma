@@ -21,16 +21,17 @@ enum ParkingCategory {
 }
 
 model User {
-  id              String           @id @default(uuid())
-  email           String           @unique
-  name            String?
-  picture         String?
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @updatedAt
-  role            Role             @default(USER)
-  createdSpots    ParkingSpot[]    @relation("UserCreatedSpots")
-  reviews         Review[]
-  parkingSessions ParkingSession[]
+  id                String             @id @default(uuid())
+  email             String             @unique
+  name              String?
+  picture           String?
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  role              Role               @default(USER)
+  createdSpots      ParkingSpot[]      @relation("UserCreatedSpots")
+  reviews           Review[]
+  parkingSessions   ParkingSession[]
+  pushSubscriptions PushSubscription[]
 }
 
 model ParkingSpot {
@@ -65,14 +66,25 @@ model Review {
 }
 
 model ParkingSession {
-  id        String    @id @default(uuid())
-  lat       Float
-  lng       Float
-  address   String?
-  notes     String?
-  startedAt DateTime  @default(now())
-  endsAt    DateTime?
-  isActive  Boolean   @default(true)
+  id           String    @id @default(uuid())
+  lat          Float
+  lng          Float
+  address      String?
+  notes        String?
+  startedAt    DateTime  @default(now())
+  endsAt       DateTime?
+  isActive     Boolean   @default(true)
+  userId       String
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  reminderSent Boolean   @default(false)
+}
+
+model PushSubscription {
+  id        String   @id @default(uuid())
+  endpoint  String   @unique
+  p256dh    String
+  auth      String
+  createdAt DateTime @default(now())
   userId    String
-  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
