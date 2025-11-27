@@ -76,7 +76,7 @@ export class ParkingSpotsService {
 
     if (category) {
       filters.push(Prisma.sql`
-        AND "category" = ${category}
+        AND "category" = ${category}::"ParkingCategory"
       `);
     }
 
