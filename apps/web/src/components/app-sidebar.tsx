@@ -20,6 +20,7 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from '@/components/ui/sidebar';
+import { NotificationToggle } from './profile/notification-toggle';
 
 // Menüpontok definíciója
 const data = {
@@ -75,6 +76,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarContent>
 
       <SidebarFooter>
+        <div className="p-2">
+          <NotificationToggle />
+        </div>
         <SidebarMenu>
           <SidebarMenuItem>
             <DropdownMenu>
