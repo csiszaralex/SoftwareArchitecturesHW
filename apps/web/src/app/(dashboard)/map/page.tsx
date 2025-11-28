@@ -1,6 +1,7 @@
 'use client';
 
 import { ActiveSessionOverlay } from '@/components/parking/active-session-overlay';
+import { AddParkingDialog } from '@/components/parking/parking/add-parking-dialog';
 import { SearchAndFilterBar } from '@/components/parking/search-and-filter-bar';
 import { StartParkingButton } from '@/components/parking/start-parking-button';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -61,6 +62,10 @@ export default function MapPage() {
   return (
     <div className="flex-1 min-h-0 w-full rounded-xl overflow-hidden border border-border relative">
       <SearchAndFilterBar searchState={searchParams} onSearchChange={handleSearchChange} />
+
+      <div className="absolute top-4 right-4 z-40">
+        <AddParkingDialog />
+      </div>
 
       <Map
         spots={spots}

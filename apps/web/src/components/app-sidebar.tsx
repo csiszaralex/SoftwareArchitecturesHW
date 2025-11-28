@@ -31,11 +31,6 @@ const data = {
       icon: Map,
     },
     {
-      title: 'Parkoló hozzáadása',
-      url: '/add-parking',
-      icon: Plus,
-    },
-    {
       title: 'Parkolásaim',
       url: '/my-sessions',
       icon: Car,
@@ -56,7 +51,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarHeader className="flex items-center justify-center py-4">
         <div className="flex items-center gap-2 font-bold text-xl text-primary">
           <Map className="h-6 w-6" />
-          {/* A ModeToggle-t INNEN TÖRÖLTÜK */}
           <span className="group-data-[collapsible=icon]:hidden">Parking App</span>
         </div>
       </SidebarHeader>
