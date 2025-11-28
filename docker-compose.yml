@@ -1,0 +1,49 @@
+services:
+  db:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password        # passzoljon az .env-ben lévőhöz
+      POSTGRES_DB: parking_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  api:
+    build:
+      context: .
+      dockerfile: ./apps/api/Dockerfile
+    # Itt a sima .env-et használjuk
+    env_file:
+      - ./apps/api/.env
+    # Itt írjuk felül azt az 1 sort, ami Dockerben más
+    environment:
+      DATABASE_URL: "postgresql://postgres:password@db:5432/parking_db?schema=public"
+    depends_on:
+      - db
+    ports:
+      - "3001:3001"
+    command: >
+      sh -c "cd /app &&
+             pnpm --filter @parking/schema build &&
+             cd /app/apps/api &&
+             pnpm exec prisma db push &&
+             pnpm exec prisma db seed &&
+             pnpm run dev"
+
+  web:
+    build:
+      context: .
+      dockerfile: ./apps/web/Dockerfile
+    # Frontend – sima .env.local
+    env_file:
+      - ./apps/web/.env.local
+    depends_on:
+      - api
+    ports:
+      - "3000:3000"
+
+volumes:
+  db_data:

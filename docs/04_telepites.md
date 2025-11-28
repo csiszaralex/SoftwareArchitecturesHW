@@ -1,22 +1,22 @@
 # 4. Telepítési és Üzemeltetési útmutató
 
-Ez a fejezet lépésről lépésre bemutatja, hogyan állítható be a fejlesztői környezet és hogyan indítható el a rendszer helyi gépen, konténerizáció nélkül.
+Ez a fejezet bemutatja, hogyan indítható el a rendszer két külön módon:
 
-## 4.1. Előfeltételek (Prerequisites)
-A szoftver futtatásához az alábbi szoftvereknek kell telepítve lenniük a gazdagépen:
+1. **Docker Compose alapú futtatás** (EGY parancsból működik, ajánlott)
+2. **Lokális futtatás konténerek nélkül** (Node.js + pnpm + lokális PostgreSQL)
 
-* **Node.js (v20+):** JavaScript futtatókörnyezet.
-* **pnpm (v9+):** Hatékony csomagkezelő (a Monorepo struktúra miatt ajánlott).
-    * Telepítés: `npm install -g pnpm`
-* **PostgreSQL (v14+):** Relációs adatbázis szerver.
-    * Telepítve és futnia kell a háttérben (vagy elérhetőnek kell lennie egy felhő szolgáltatónál).
-    * Létre kell hozni egy üres adatbázist (pl. `parking_db`).
+Mindkét megoldáshoz szükséges:
+- a `.env` és `.env.local` létrehozása a mellékelt `.env.example` fájlok alapján
+- a `firebase-admin-sdk.json` bemásolása a backend gyökérkönyvtárába
 
-## 4.2. Konfiguráció és Környezeti változók
-A rendszer biztonsági okokból nem tárol titkos kulcsokat a forráskódban. Ezeket környezeti változókban (`.env`) kell megadni.
+---
 
-### 4.2.1. Backend konfiguráció (`apps/api/.env`)
-Hozzon létre egy `.env` fájlt az `apps/api` mappában az alábbi tartalommal:
+# 4.1. Közös előkészületek (mindkét futtatási módhoz kötelező)
+
+## 4.1.1. Környezeti változók
+
+### Backend (`apps/api/.env`)
+Hozza létre az `apps/api/.env` fájlt az `apps/api/.env.example` alapján:
 
 ```env
 # Szerver beállítások
@@ -25,82 +25,177 @@ NODE_ENV="development"
 FRONTEND_URL="http://localhost:3000"
 
 # Adatbázis kapcsolat (PostgreSQL Connection String)
-# Formátum: postgresql://USER:PASSWORD@HOST:PORT/DATABASE?schema=public
+# Lokális futtatás:
 DATABASE_URL="postgresql://postgres:password@localhost:5432/parking_db?schema=public"
+# Docker módban ezt a docker-compose.yml felülírja (host= db)
 
-# Biztonság (JWT titkos kulcs - tetszőleges hosszú string)
+# JWT titkos kulcs
 JWT_SECRET="szupertitkos_fejlesztoi_kulcs"
 
-# Google OAuth2 (Google Cloud Console-ból)
+# Google OAuth2
 GOOGLE_CLIENT_ID="<GOOGLE_CLIENT_ID>"
 GOOGLE_CLIENT_SECRET="<GOOGLE_CLIENT_SECRET>"
 GOOGLE_CALLBACK_URL="http://localhost:3001/auth/google/callback"
 
-# Értesítések (VAPID kulcsok - generálható: npx web-push generate-vapid-keys)
+# Web Push VAPID kulcsok
 VAPID_PUBLIC_KEY="<VAPID_PUBLIC_KEY>"
 VAPID_PRIVATE_KEY="<VAPID_PRIVATE_KEY>"
 VAPID_SUBJECT="mailto:admin@example.com"
 
-# Képfeltöltés (Firebase)
+# Firebase Storage
 FIREBASE_STORAGE_BUCKET="<PROJECT_ID>.firebasestorage.app"
 GOOGLE_APPLICATION_CREDENTIALS="./firebase-admin-sdk.json"
 ```
 
-> **Fontos:** A Firebase Service Account kulcsfájlt (`firebase-admin-sdk.json`) másolja be az `apps/api/` gyökérkönyvtárába!
-
-### 4.2.2. Frontend konfiguráció (`apps/web/.env.local`)
-Hozzon létre egy `.env.local` fájlt az `apps/web` mappában:
+### Frontend (`apps/web/.env.local`)
+Hozza létre az `apps/web/.env.local` fájlt az `apps/web/.env.local.example` alapján:
 
 ```env
-# Backend API elérhetősége
 NEXT_PUBLIC_API_URL="http://localhost:3001"
-
-# Térkép (Mapbox Public Token)
 NEXT_PUBLIC_MAPBOX_TOKEN="pk.eyJ<...>"
 ```
 
-## 4.3. Telepítés és Adatbázis inicializálás
+### Firebase Service Account
+Másolja be a Google Cloud Console-ból letöltött:
+`firebase-admin-sdk.json`
+fájlt ide:
+```apps/api/firebase-admin-sdk.json```
 
-Nyisson egy terminált a projekt gyökérkönyvtárában, és kövesse az alábbi lépéseket:
+---
 
-**1. Függőségek telepítése:**
-Mivel Monorepo-t használunk, ez a parancs telepíti a backend, a frontend és a közös csomagok összes függőségét.
+# 4.2. Docker Compose alapú futtatás
+
+Ez a mód lehetővé teszi, hogy a teljes rendszer egy paranccsal induljon:
+
+- PostgreSQL konténer
+- Backend (NestJS)
+- Frontend (Next.js)
+- Prisma migrációk automatikusan lefutnak
+
+## 4.2.1. Előfeltételek Dockerhez
+Szükséges:
+
+- Docker Desktop (Windows / macOS)
+- Docker Engine + Docker Compose (Linux)
+
+**Node.js, pnpm és PostgreSQL NEM kötelező**, mert minden konténerben fut.
+
+## 4.2.2. Indítás Docker Compose-zal
+
+Lépjen a projekt gyökérkönyvtárába, majd futtassa:
+
+```bash
+docker compose up -d --build
+```
+
+Ez:
+- felépíti a Docker image-eket,
+- elindítja a `db`, `api`, `web` konténereket,
+- lefuttatja:
+  - `pnpm exec prisma db push`
+  - `pnpm exec prisma db seed`
+- elindítja a NestJS és a Next.js szervereket.
+
+## 4.2.3. Elérhetőségek Docker módban
+
+- Backend API: <http://localhost:3001>
+- Swagger: <http://localhost:3001/api-docs>
+- Frontend: <http://localhost:3000>
+
+## 4.2.4. Hasznos Docker parancsok
+
+Leállítás:
+```bash
+docker compose down
+```
+
+Leállítás + adatbázis újraformázása:
+```bash
+docker compose down -v
+```
+
+Logok:
+```bash
+docker compose logs -f api
+docker compose logs -f web
+docker compose logs -f db
+```
+
+---
+
+# 4.3. Lokális futtatás konténerizáció nélkül
+
+Ebben a módban **a fejlesztői gépen futtatjuk**:
+
+- Node.js + pnpm
+- lokális PostgreSQL
+- lokális Prisma migrációk
+- turborepo → `pnpm dev` indítja a projektet
+
+## 4.3.1. Előfeltételek
+
+A gépen legyen telepítve:
+
+- Node.js (v20+)
+- pnpm (v9+)
+  - telepítés:  
+    ```bash
+    npm install -g pnpm
+    ```
+- PostgreSQL (v14+)
+  - hozzon létre egy adatbázist: `parking_db`
+  - felhasználó: `postgres`
+  - jelszó: `password`
+  (ennek megfelelően szerepel a `.env`-ben)
+
+## 4.3.2. Telepítés
+
+Lépjen a projekt gyökerébe:
+
 ```bash
 pnpm install
 ```
 
-**2. Adatbázis séma szinkronizálása (Migráció):**
-Ez a lépés létrehozza a szükséges táblákat (User, ParkingSpot, stb.) a megadott PostgreSQL adatbázisban.
+## 4.3.3. Adatbázis migrációk futtatása
+
 ```bash
-# Lépjen a backend könyvtárba
 cd apps/api
-
-# Migráció futtatása
 pnpm exec prisma db push
-
-# (Opcionális) Tesztadatok feltöltése
 pnpm exec prisma db seed
-```
-
-**3. Visszalépés a gyökérbe:**
-```bash
 cd ../..
 ```
 
-## 4.4. A Rendszer Indítása
-
-A fejlesztői környezet indításához (ahol a Frontend és a Backend párhuzamosan fut) használja az alábbi parancsot a gyökérkönyvtárban:
+## 4.3.4. A rendszer indítása
 
 ```bash
 pnpm dev
 ```
 
-A TurboRepo elindítja mindkét alkalmazást:
-* **Backend API:** [http://localhost:3001](http://localhost:3001) (Swagger dokumentáció: `/api-docs`)
-* **Frontend Web App:** [http://localhost:3000](http://localhost:3000)
+Elérhetőségek:
 
-## 4.5. Hibaelhárítás
+- Backend API: <http://localhost:3001>
+- Swagger: <http://localhost:3001/api-docs>
+- Frontend: <http://localhost:3000>
 
-* **Adatbázis hiba:** Győződjön meg róla, hogy a PostgreSQL fut, és a `DATABASE_URL` helyes felhasználónevet/jelszót tartalmaz.
-* **Hiányzó kulcsok:** Ha a térkép nem tölt be, ellenőrizze a `NEXT_PUBLIC_MAPBOX_TOKEN`-t. Ha a képfeltöltés nem működik, ellenőrizze a `firebase-admin-sdk.json` meglétét.
-* **Port ütközés:** Ha a 3000-es vagy 3001-es port foglalt, állítsa le a futó folyamatokat, vagy módosítsa a `PORT` változókat az `.env` fájlokban.
+---
+
+# 4.4. Hibaelhárítás (mindkét módhoz)
+
+- **P1000 / PostgreSQL auth error**
+  - lokális módban: rossz DB jelszó vagy nincs PostgreSQL futtatva
+  - Docker módban: volume miatt régi DB jelszó él → használja:
+    ```bash
+    docker compose down -v
+    docker compose up -d --build
+    ```
+
+- **Firebase / invalid_grant**
+  - rossz service account JSON
+  - rossz projekt bucket
+  - JSON csere után kötelező: `docker compose up -d --build`
+
+- **Mapbox nem tölt be**
+  - `NEXT_PUBLIC_MAPBOX_TOKEN` rossz / hiányzik
+
+- **Port ütközés**
+  - módosítsa a 3000 vagy 3001 portot `.env`-ben és `docker-compose.yml`-ben is.
