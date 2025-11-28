@@ -20,29 +20,30 @@ Hozza létre az `apps/api/.env` fájlt az `apps/api/.env.example` alapján:
 
 ```env
 # Szerver beállítások
+# Szerver beállítások
 PORT=3001
 NODE_ENV="development"
 FRONTEND_URL="http://localhost:3000"
 
 # Adatbázis kapcsolat (PostgreSQL Connection String)
-# Lokális futtatás:
+# Formátum: postgresql://USER:PASSWORD@HOST:PORT/DATABASE?schema=public
 DATABASE_URL="postgresql://postgres:password@localhost:5432/parking_db?schema=public"
 # Docker módban ezt a docker-compose.yml felülírja (host= db)
 
-# JWT titkos kulcs
+# Biztonság (JWT titkos kulcs - tetszőleges hosszú string)
 JWT_SECRET="szupertitkos_fejlesztoi_kulcs"
 
-# Google OAuth2
+# Google OAuth2 (Google Cloud Console-ból)
 GOOGLE_CLIENT_ID="<GOOGLE_CLIENT_ID>"
 GOOGLE_CLIENT_SECRET="<GOOGLE_CLIENT_SECRET>"
 GOOGLE_CALLBACK_URL="http://localhost:3001/auth/google/callback"
 
-# Web Push VAPID kulcsok
+# Értesítések (VAPID kulcsok - generálható: npx web-push generate-vapid-keys)
 VAPID_PUBLIC_KEY="<VAPID_PUBLIC_KEY>"
 VAPID_PRIVATE_KEY="<VAPID_PRIVATE_KEY>"
 VAPID_SUBJECT="mailto:admin@example.com"
 
-# Firebase Storage
+# Képfeltöltés (Firebase)
 FIREBASE_STORAGE_BUCKET="<PROJECT_ID>.firebasestorage.app"
 GOOGLE_APPLICATION_CREDENTIALS="./firebase-admin-sdk.json"
 ```
@@ -51,7 +52,10 @@ GOOGLE_APPLICATION_CREDENTIALS="./firebase-admin-sdk.json"
 Hozza létre az `apps/web/.env.local` fájlt az `apps/web/.env.local.example` alapján:
 
 ```env
+# Backend API elérhetősége
 NEXT_PUBLIC_API_URL="http://localhost:3001"
+
+# Térkép (Mapbox Public Token)
 NEXT_PUBLIC_MAPBOX_TOKEN="pk.eyJ<...>"
 ```
 
@@ -148,34 +152,45 @@ A gépen legyen telepítve:
   - jelszó: `password`
   (ennek megfelelően szerepel a `.env`-ben)
 
-## 4.3.2. Telepítés
+## 4.3.2. Telepítés és Adatbázis inicializálás
 
-Lépjen a projekt gyökerébe:
+Nyisson egy terminált a projekt gyökérkönyvtárában, és kövesse az alábbi lépéseket:
 
+**1. Függőségek telepítése:**
+Mivel Monorepo-t használunk, ez a parancs telepíti a backend, a frontend és a közös csomagok összes függőségét.
 ```bash
 pnpm install
 ```
 
-## 4.3.3. Adatbázis migrációk futtatása
-
+**2. Adatbázis séma szinkronizálása (Migráció):**
+Ez a lépés létrehozza a szükséges táblákat (User, ParkingSpot, stb.) a megadott PostgreSQL adatbázisban.
 ```bash
+# Lépjen a backend könyvtárba
 cd apps/api
+
+# Migráció futtatása
 pnpm exec prisma db push
+
+# (Opcionális) Tesztadatok feltöltése
 pnpm exec prisma db seed
+```
+
+**3. Visszalépés a gyökérbe:**
+```bash
 cd ../..
 ```
 
-## 4.3.4. A rendszer indítása
+## 4.4. A Rendszer Indítása
+
+A fejlesztői környezet indításához (ahol a Frontend és a Backend párhuzamosan fut) használja az alábbi parancsot a gyökérkönyvtárban:
 
 ```bash
 pnpm dev
 ```
 
-Elérhetőségek:
-
-- Backend API: <http://localhost:3001>
-- Swagger: <http://localhost:3001/api-docs>
-- Frontend: <http://localhost:3000>
+A TurboRepo elindítja mindkét alkalmazást:
+* **Backend API:** [http://localhost:3001](http://localhost:3001) (Swagger dokumentáció: `/api-docs`)
+* **Frontend Web App:** [http://localhost:3000](http://localhost:3000)
 
 ---
 
