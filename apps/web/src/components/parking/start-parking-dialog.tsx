@@ -15,6 +15,7 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { useActiveSession } from '@/hooks/use-active-session';
 import { useGeolocation } from '@/hooks/use-geolocation';
 import { useStartParking } from '@/hooks/use-start-parking';
 
@@ -22,6 +23,7 @@ export function StartParkingDialog() {
   const [open, setOpen] = useState(false);
   const location = useGeolocation();
   const { mutate, isPending } = useStartParking();
+  const { data: session, isLoading, isError } = useActiveSession();
 
   const [endsAtTime, setEndsAtTime] = useState('');
   // Alapértelmezett koordináta (Budapest), ha nincs GPS
@@ -42,6 +44,10 @@ export function StartParkingDialog() {
       return () => clearTimeout(timer);
     }
   }, [location.isAvailable, location.lat, location.lng, open]);
+
+  if (session && session.isActive) {
+    return null;
+  }
 
   const handleStart = () => {
     let endsAtDate: Date | undefined = undefined;

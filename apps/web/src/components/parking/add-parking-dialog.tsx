@@ -2,7 +2,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQueryClient } from '@tanstack/react-query';
-import { Loader2, Plus } from 'lucide-react';
+import { Loader2, Plus, UploadCloud } from 'lucide-react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
@@ -24,7 +24,6 @@ import { Input } from '@/components/ui/input';
 import { api } from '@/lib/api';
 import { CreateParkingSpotInput, CreateParkingSpotSchema } from '@parking/schema';
 
-// ... (Kategória konstansok ugyanazok, mint előbb)
 const CATEGORY_OPTIONS = [
   { label: 'Ingyenes', value: 'FREE' },
   { label: 'Fizetős', value: 'PAID' },
@@ -68,9 +67,10 @@ export function AddParkingDialog() {
       await api.post('/parking-spots', { ...data, images: imageUrls });
 
       toast.success('Parkoló sikeresen létrehozva!');
-      setOpen(false); // Bezárjuk a dialogot
-      form.reset(); // Tiszta lappal indulunk legközelebb
-      queryClient.invalidateQueries({ queryKey: ['parking-spots'] }); // Frissítjük a térképet
+      setOpen(false);
+      form.reset();
+      setSelectedFile(null);
+      queryClient.invalidateQueries({ queryKey: ['parking-spots'] });
     } catch (error: any) {
       toast.error('Hiba történt: ' + (error.response?.data?.message || 'Hiba'));
     } finally {
@@ -81,18 +81,19 @@ export function AddParkingDialog() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="gap-2 shadow-lg">
+        <Button className="gap-2 shadow-lg bg-amber-100 hover:bg-amber-300 text-gray-900 dark:bg-amber-600 dark:hover:bg-amber-500 dark:text-gray-100">
           <Plus className="h-4 w-4" /> Új Parkoló
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+      {/* JAVÍTÁS: overflow-y-auto és flex elrendezés a görgethetőségért mobilon is */}
+      <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto flex flex-col">
         <DialogHeader>
           <DialogTitle>Új parkolóhely</DialogTitle>
           <DialogDescription>Oszd meg másokkal a felfedezett helyet.</DialogDescription>
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-2">
             <FormInput
               control={form.control}
               name="name"
@@ -116,10 +117,15 @@ export function AddParkingDialog() {
               />
             </div>
 
+            {/* JAVÍTÁS: Térkép konténer megerősítése */}
             <div className="space-y-2">
               <FormLabel>Helyszín</FormLabel>
-              {/* A Dialogban a térkép néha bugos lehet méret miatt, de a LocationPicker általában jó */}
-              <div className="h-[200px]">
+              {/* z-0: A térkép rétege legyen alap szinten
+                  relative: Hogy a belső abszolút elemek ne szökjenek ki
+                  isolate: Létrehoz egy új stacking contextet
+                  overflow-hidden: Levág mindent, ami kilógna
+              */}
+              <div className="h-[250px] w-full rounded-md border shadow-sm relative z-0 isolate overflow-hidden">
                 <LocationPicker
                   value={{ lat: form.watch('lat'), lng: form.watch('lng') }}
                   onChange={coords => {
@@ -130,16 +136,28 @@ export function AddParkingDialog() {
               </div>
             </div>
 
-            <div className="space-y-2">
-              <FormLabel>Fotó</FormLabel>
-              <Input
-                type="file"
-                accept="image/*"
-                onChange={e => setSelectedFile(e.target.files?.[0] || null)}
-              />
+            {/* JAVÍTÁS: Képfeltöltés (Drag & Drop) - z-index növelése és háttér, hogy biztosan takarjon */}
+            <div className="space-y-2 pt-2 relative z-10 bg-background">
+              <FormLabel>Fotó feltöltése</FormLabel>
+              <div className="border-2 border-dashed rounded-lg p-6 flex flex-col items-center justify-center cursor-pointer hover:bg-muted/50 transition-colors relative">
+                <Input
+                  type="file"
+                  accept="image/*"
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20"
+                  onChange={e => setSelectedFile(e.target.files?.[0] || null)}
+                />
+                <UploadCloud className="h-8 w-8 text-muted-foreground mb-2" />
+                <p className="text-sm text-muted-foreground text-center">
+                  {selectedFile ? (
+                    <span className="text-primary font-bold">{selectedFile.name}</span>
+                  ) : (
+                    'Kattints vagy húzz ide egy képet'
+                  )}
+                </p>
+              </div>
             </div>
 
-            <Button type="submit" className="w-full" disabled={isSubmitting}>
+            <Button type="submit" className="w-full mt-4" disabled={isSubmitting}>
               {isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : 'Létrehozás'}
             </Button>
           </form>

@@ -45,7 +45,7 @@ function CreateSwagger(app: INestApplication) {
   };
 
   const document = SwaggerModule.createDocument(app, configSW, documentOptions);
-  SwaggerModule.setup('api', app, document, customOptions);
+  SwaggerModule.setup('api-docs', app, document, customOptions);
 }
 
 void bootstrap();
