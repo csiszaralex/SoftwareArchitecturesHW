@@ -5,7 +5,7 @@ export const StartParkingSchema = z.object({
   lng: z.number(),
   address: z.string().optional(),
   spotId: z.string().optional(),
-  endsAt: z.iso.datetime().pipe(z.coerce.date()),
+  endsAt: z.iso.datetime().pipe(z.coerce.date()).optional(),
   notes: z.string().optional(),
 });
 

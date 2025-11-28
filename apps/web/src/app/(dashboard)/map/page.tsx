@@ -1,9 +1,9 @@
 'use client';
 
 import { ActiveSessionOverlay } from '@/components/parking/active-session-overlay';
-import { AddParkingDialog } from '@/components/parking/parking/add-parking-dialog';
+import { AddParkingDialog } from '@/components/parking/add-parking-dialog';
 import { SearchAndFilterBar } from '@/components/parking/search-and-filter-bar';
-import { StartParkingButton } from '@/components/parking/start-parking-button';
+import { StartParkingDialog } from '@/components/parking/start-parking-dialog';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useGeolocation } from '@/hooks/use-geolocation';
 import { useParkingSpots } from '@/hooks/use-parking-spots';
@@ -74,7 +74,7 @@ export default function MapPage() {
         userLocation={location.isAvailable ? { lat: location.lat, lng: location.lng } : null}
       />
       <ActiveSessionOverlay />
-      <StartParkingButton />
+      <StartParkingDialog />
     </div>
   );
 }
