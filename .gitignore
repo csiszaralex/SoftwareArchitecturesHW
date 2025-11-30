@@ -23,6 +23,7 @@ out
 .env
 .env.*
 !.env.example
+!.env.local.example
 
 # --- Testing & Coverage ---
 coverage
