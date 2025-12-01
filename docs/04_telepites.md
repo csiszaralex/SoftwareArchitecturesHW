@@ -20,7 +20,6 @@ Hozza létre az `apps/api/.env` fájlt az `apps/api/.env.example` alapján:
 
 ```env
 # Szerver beállítások
-# Szerver beállítások
 PORT=3001
 NODE_ENV="development"
 FRONTEND_URL="http://localhost:3000"
