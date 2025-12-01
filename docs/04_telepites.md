@@ -11,11 +11,11 @@ Mindkét megoldáshoz szükséges:
 
 ---
 
-# 4.1. Közös előkészületek (mindkét futtatási módhoz kötelező)
+## 4.1. Közös előkészületek (mindkét futtatási módhoz kötelező)
 
-## 4.1.1. Környezeti változók
+### 4.1.1. Környezeti változók
 
-### Backend (`apps/api/.env`)
+#### Backend (`apps/api/.env`)
 Hozza létre az `apps/api/.env` fájlt az `apps/api/.env.example` alapján:
 
 ```env
@@ -47,7 +47,7 @@ FIREBASE_STORAGE_BUCKET="<PROJECT_ID>.firebasestorage.app"
 GOOGLE_APPLICATION_CREDENTIALS="./firebase-admin-sdk.json"
 ```
 
-### Frontend (`apps/web/.env.local`)
+#### Frontend (`apps/web/.env.local`)
 Hozza létre az `apps/web/.env.local` fájlt az `apps/web/.env.local.example` alapján:
 
 ```env
@@ -58,7 +58,7 @@ NEXT_PUBLIC_API_URL="http://localhost:3001"
 NEXT_PUBLIC_MAPBOX_TOKEN="pk.eyJ<...>"
 ```
 
-### Firebase Service Account
+#### Firebase Service Account
 Másolja be a Google Cloud Console-ból letöltött:
 `firebase-admin-sdk.json`
 fájlt ide:
@@ -66,7 +66,7 @@ fájlt ide:
 
 ---
 
-# 4.2. Docker Compose alapú futtatás
+## 4.2. Docker Compose alapú futtatás
 
 Ez a mód lehetővé teszi, hogy a teljes rendszer egy paranccsal induljon:
 
@@ -75,7 +75,7 @@ Ez a mód lehetővé teszi, hogy a teljes rendszer egy paranccsal induljon:
 - Frontend (Next.js)
 - Prisma migrációk automatikusan lefutnak
 
-## 4.2.1. Előfeltételek Dockerhez
+### 4.2.1. Előfeltételek Dockerhez
 Szükséges:
 
 - Docker Desktop (Windows / macOS)
@@ -83,7 +83,7 @@ Szükséges:
 
 **Node.js, pnpm és PostgreSQL NEM kötelező**, mert minden konténerben fut.
 
-## 4.2.2. Indítás Docker Compose-zal
+### 4.2.2. Indítás Docker Compose-zal
 
 Lépjen a projekt gyökérkönyvtárába, majd futtassa:
 
@@ -99,13 +99,13 @@ Ez:
   - `pnpm exec prisma db seed`
 - elindítja a NestJS és a Next.js szervereket.
 
-## 4.2.3. Elérhetőségek Docker módban
+### 4.2.3. Elérhetőségek Docker módban
 
 - Backend API: <http://localhost:3001>
 - Swagger: <http://localhost:3001/api-docs>
 - Frontend: <http://localhost:3000>
 
-## 4.2.4. Hasznos Docker parancsok
+### 4.2.4. Hasznos Docker parancsok
 
 Leállítás:
 ```bash
@@ -126,7 +126,7 @@ docker compose logs -f db
 
 ---
 
-# 4.3. Lokális futtatás konténerizáció nélkül
+## 4.3. Lokális futtatás konténerizáció nélkül
 
 Ebben a módban **a fejlesztői gépen futtatjuk**:
 
@@ -135,13 +135,13 @@ Ebben a módban **a fejlesztői gépen futtatjuk**:
 - lokális Prisma migrációk
 - turborepo → `pnpm dev` indítja a projektet
 
-## 4.3.1. Előfeltételek
+### 4.3.1. Előfeltételek
 
 A gépen legyen telepítve:
 
 - Node.js (v20+)
 - pnpm (v9+)
-  - telepítés:  
+  - telepítés:
     ```bash
     npm install -g pnpm
     ```
@@ -151,7 +151,7 @@ A gépen legyen telepítve:
   - jelszó: `password`
   (ennek megfelelően szerepel a `.env`-ben)
 
-## 4.3.2. Telepítés és Adatbázis inicializálás
+### 4.3.2. Telepítés és Adatbázis inicializálás
 
 Nyisson egy terminált a projekt gyökérkönyvtárában, és kövesse az alábbi lépéseket:
 
@@ -193,7 +193,7 @@ A TurboRepo elindítja mindkét alkalmazást:
 
 ---
 
-# 4.4. Hibaelhárítás (mindkét módhoz)
+## 4.4. Hibaelhárítás (mindkét módhoz)
 
 - **P1000 / PostgreSQL auth error**
   - lokális módban: rossz DB jelszó vagy nincs PostgreSQL futtatva

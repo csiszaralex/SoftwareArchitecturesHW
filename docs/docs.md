@@ -21,7 +21,6 @@ output:
       left: '2cm'
       right: '2cm'
 ---
-
 # 1. Bevezetés és Célkitűzés
 
 ## 1.1. A probléma felvetése
@@ -86,6 +85,7 @@ graph TD
     API -->|"Értesítés küldés"| PushService
     PushService -.->|"Push üzenet"| User
 ```
+
 
 <div style="page-break-after: always;"></div>
 
@@ -179,6 +179,7 @@ A rendszer architektúrájának kiválasztásakor a modularitás, a típusbizton
 | **ORM**       | **Prisma**                | Típusbiztos adatbázis-elérés és migrációkezelés.                      |
 | **Validáció** | **Zod**                   | Megosztott validációs sémák a Frontend és Backend között (Monorepo).  |
 | **DevOps**    | **Docker & TurboRepo**    | Konténerizált futtatás és hatékony monorepo build rendszer.           |
+
 
 <div style="page-break-after: always;"></div>
 
@@ -321,6 +322,7 @@ A kliens oldal **Next.js App Router**-t használ, amely lehetővé teszi a Szerv
   - **TanStack Query (React Query):** A szerverről érkező adatok (parkolók listája, aktív session) gyorsítótárazására és szinkronizálására. Automatikusan kezeli a "Loading" és "Error" állapotokat.
 - **Térkép:** A `react-map-gl` könyvtárat használjuk a Mapbox integrációhoz, amely WebGL alapon, vektorosan rendereli a térképet, támogatva a 3D forgatást és a sötét módot (`next-themes`).
 
+
 <div style="page-break-after: always;"></div>
 
 # 4. Telepítési és Üzemeltetési útmutató
@@ -336,11 +338,11 @@ Mindkét megoldáshoz szükséges:
 
 ---
 
-# 4.1. Közös előkészületek (mindkét futtatási módhoz kötelező)
+## 4.1. Közös előkészületek (mindkét futtatási módhoz kötelező)
 
-## 4.1.1. Környezeti változók
+### 4.1.1. Környezeti változók
 
-### Backend (`apps/api/.env`)
+#### Backend (`apps/api/.env`)
 Hozza létre az `apps/api/.env` fájlt az `apps/api/.env.example` alapján:
 
 ```env
@@ -372,7 +374,7 @@ FIREBASE_STORAGE_BUCKET="<PROJECT_ID>.firebasestorage.app"
 GOOGLE_APPLICATION_CREDENTIALS="./firebase-admin-sdk.json"
 ```
 
-### Frontend (`apps/web/.env.local`)
+#### Frontend (`apps/web/.env.local`)
 Hozza létre az `apps/web/.env.local` fájlt az `apps/web/.env.local.example` alapján:
 
 ```env
@@ -383,7 +385,7 @@ NEXT_PUBLIC_API_URL="http://localhost:3001"
 NEXT_PUBLIC_MAPBOX_TOKEN="pk.eyJ<...>"
 ```
 
-### Firebase Service Account
+#### Firebase Service Account
 Másolja be a Google Cloud Console-ból letöltött:
 `firebase-admin-sdk.json`
 fájlt ide:
@@ -391,7 +393,7 @@ fájlt ide:
 
 ---
 
-# 4.2. Docker Compose alapú futtatás
+## 4.2. Docker Compose alapú futtatás
 
 Ez a mód lehetővé teszi, hogy a teljes rendszer egy paranccsal induljon:
 
@@ -400,7 +402,7 @@ Ez a mód lehetővé teszi, hogy a teljes rendszer egy paranccsal induljon:
 - Frontend (Next.js)
 - Prisma migrációk automatikusan lefutnak
 
-## 4.2.1. Előfeltételek Dockerhez
+### 4.2.1. Előfeltételek Dockerhez
 Szükséges:
 
 - Docker Desktop (Windows / macOS)
@@ -408,7 +410,7 @@ Szükséges:
 
 **Node.js, pnpm és PostgreSQL NEM kötelező**, mert minden konténerben fut.
 
-## 4.2.2. Indítás Docker Compose-zal
+### 4.2.2. Indítás Docker Compose-zal
 
 Lépjen a projekt gyökérkönyvtárába, majd futtassa:
 
@@ -424,13 +426,13 @@ Ez:
   - `pnpm exec prisma db seed`
 - elindítja a NestJS és a Next.js szervereket.
 
-## 4.2.3. Elérhetőségek Docker módban
+### 4.2.3. Elérhetőségek Docker módban
 
 - Backend API: <http://localhost:3001>
 - Swagger: <http://localhost:3001/api-docs>
 - Frontend: <http://localhost:3000>
 
-## 4.2.4. Hasznos Docker parancsok
+### 4.2.4. Hasznos Docker parancsok
 
 Leállítás:
 ```bash
@@ -451,7 +453,7 @@ docker compose logs -f db
 
 ---
 
-# 4.3. Lokális futtatás konténerizáció nélkül
+## 4.3. Lokális futtatás konténerizáció nélkül
 
 Ebben a módban **a fejlesztői gépen futtatjuk**:
 
@@ -460,13 +462,13 @@ Ebben a módban **a fejlesztői gépen futtatjuk**:
 - lokális Prisma migrációk
 - turborepo → `pnpm dev` indítja a projektet
 
-## 4.3.1. Előfeltételek
+### 4.3.1. Előfeltételek
 
 A gépen legyen telepítve:
 
 - Node.js (v20+)
 - pnpm (v9+)
-  - telepítés:  
+  - telepítés:
     ```bash
     npm install -g pnpm
     ```
@@ -476,7 +478,7 @@ A gépen legyen telepítve:
   - jelszó: `password`
   (ennek megfelelően szerepel a `.env`-ben)
 
-## 4.3.2. Telepítés és Adatbázis inicializálás
+### 4.3.2. Telepítés és Adatbázis inicializálás
 
 Nyisson egy terminált a projekt gyökérkönyvtárában, és kövesse az alábbi lépéseket:
 
@@ -518,7 +520,7 @@ A TurboRepo elindítja mindkét alkalmazást:
 
 ---
 
-# 4.4. Hibaelhárítás (mindkét módhoz)
+## 4.4. Hibaelhárítás (mindkét módhoz)
 
 - **P1000 / PostgreSQL auth error**
   - lokális módban: rossz DB jelszó vagy nincs PostgreSQL futtatva
@@ -538,6 +540,7 @@ A TurboRepo elindítja mindkét alkalmazást:
 
 - **Port ütközés**
   - módosítsa a 3000 vagy 3001 portot `.env`-ben és `docker-compose.yml`-ben is.
+
 
 <div style="page-break-after: always;"></div>
 
@@ -610,6 +613,7 @@ _6. ábra: Parkolásindítása ablak_
 
 _7. ábra: Folyamatban lévő parkolás időzítővel és az autó pozíciójával_
 
+
 <div style="page-break-after: always;"></div>
 
 # 5. Továbbfejlesztési lehetőségek
@@ -617,37 +621,29 @@ _7. ábra: Folyamatban lévő parkolás időzítővel és az autó pozíciójáv
 Bár a rendszer jelenlegi formájában teljesíti a kitűzött MVP (Minimum Viable Product) követelményeket és stabilan működik, számos irányban bővíthető a funkcionalitás, a felhasználói élmény és az üzleti érték növelése érdekében.
 
 ## 5.1. Közösségi funkciók bővítése
-
 A jelenlegi adatmodell (`Review` entitás) már előkészíti a lehetőséget az értékelésekre, de a felületen ez még nem jelenik meg.
-
-- **Értékelés és Kommentek:** A felhasználók 1-5 csillaggal értékelhetnék a parkolókat (biztonság, tisztaság, ár-érték arány), és szöveges visszajelzést írhatnának.
-- **Jelentési rendszer (Report):** A közösség jelezhetné, ha egy parkoló megszűnt, az árak megváltoztak, vagy a leírás nem felel meg a valóságnak.
+* **Értékelés és Kommentek:** A felhasználók 1-5 csillaggal értékelhetnék a parkolókat (biztonság, tisztaság, ár-érték arány), és szöveges visszajelzést írhatnának.
+* **Jelentési rendszer (Report):** A közösség jelezhetné, ha egy parkoló megszűnt, az árak megváltoztak, vagy a leírás nem felel meg a valóságnak.
 
 ## 5.2. Fizetési rendszer integrációja
-
 Jelenleg az alkalmazás csak információt nyújt a fizetős parkolókról. A következő lépés a tranzakciók kezelése lehetne.
-
-- **Mobilparkolás:** Integráció fizetési szolgáltatókkal (pl. Stripe, SimplePay vagy Nemzeti Mobilfizetési Zrt. API), hogy a felhasználók közvetlenül az alkalmazásból indíthassák és fizethessék a parkolást.
-- **Foglalási rendszer:** Lehetőség biztosítása garázsok vagy magánparkolók előre történő lefoglalására.
+* **Mobilparkolás:** Integráció fizetési szolgáltatókkal (pl. Stripe, SimplePay vagy Nemzeti Mobilfizetési Zrt. API), hogy a felhasználók közvetlenül az alkalmazásból indíthassák és fizethessék a parkolást.
+* **Foglalási rendszer:** Lehetőség biztosítása garázsok vagy magánparkolók előre történő lefoglalására.
 
 ## 5.3. Adminisztrációs felület
-
 A rendszer karbantartásához és a minőségbiztosításhoz szükség lenne egy dedikált Admin Dashboard-ra.
-
-- **Moderáció:** A feltöltött képek és új parkolók ellenőrzése a publikálás előtt (vagy utólagos moderáció).
-- **Felhasználókezelés:** Szabályszegő felhasználók tiltása.
-- **Statisztikák:** Hőtérképek (Heatmaps) generálása a legnépszerűbb parkolási zónákról.
+* **Moderáció:** A feltöltött képek és új parkolók ellenőrzése a publikálás előtt (vagy utólagos moderáció).
+* **Felhasználókezelés:** Szabályszegő felhasználók tiltása.
+* **Statisztikák:** Hőtérképek (Heatmaps) generálása a legnépszerűbb parkolási zónákról.
 
 ## 5.4. Valós idejű foglaltságjelzés
-
 A legnagyobb hozzáadott értéket a szabad helyek valós idejű kijelzése jelentené.
-
-- **Crowdsourcing alapú:** A felhasználók jelezhetik, ha egy parkoló "Megtelt".
-- **IoT integráció:** Okosváros (Smart City) szenzorok adatainak bekötése API-n keresztül a P+R parkolók vagy parkolóházak telítettségéről.
+* **Crowdsourcing alapú:** A felhasználók jelezhetik, ha egy parkoló "Megtelt".
+* **IoT integráció:** Okosváros (Smart City) szenzorok adatainak bekötése API-n keresztül a P+R parkolók vagy parkolóházak telítettségéről.
 
 ## 5.5. Natív mobilalkalmazás
-
 Bár a PWA technológia kiváló élményt nyújt, a natív funkciók (pl. Bluetooth a sorompónyitáshoz, mélyebb rendszerintegráció) érdekében érdemes lehet a Frontend kódbázisát **React Native** vagy **Capacitor** segítségével natív iOS és Android alkalmazássá alakítani.
+
 
 <div style="page-break-after: always;"></div>
 

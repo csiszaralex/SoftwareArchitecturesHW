@@ -28,7 +28,30 @@ async function mergeDocs() {
 
     console.log(`📄 Talált fájlok: \n - ${files.join('\n - ')}`);
 
-    let content = '';
+    let content = `---
+# PDF Generálási Beállítások
+output:
+  pdf:
+    # A Mermaid diagramok és stílusok miatt a Chrome motorját használjuk
+    type: 'chrome'
+
+    # Fejléc és lábléc kikapcsolása
+    displayHeaderFooter: false
+
+    # Háttérszínek (pl. kódblokkok háttere) nyomtatása
+    printBackground: true
+
+    # Papírméret
+    format: 'A4'
+
+    # Margók (hogy ne legyen túl szűk)
+    margin:
+      top: '2cm'
+      bottom: '2cm'
+      left: '2cm'
+      right: '2cm'
+---
+`;
 
     // 3. Összefűzés
     for (const [index, file] of files.entries()) {
