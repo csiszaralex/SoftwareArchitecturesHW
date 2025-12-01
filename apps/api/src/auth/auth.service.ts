@@ -29,10 +29,38 @@ export class AuthService {
   }
 
   login(user: User) {
-    const payload = { sub: user.id, email: user.email, role: user.role };
+    const payload = { 
+      sub: user.id, 
+      email: user.email, 
+      role: user.role,
+      name: user.name,
+      picture: user.picture
+    };
+
     return {
       access_token: this.jwtService.sign(payload),
       user,
     };
   }
+
+  async logout(token: string) {
+
+    const decoded = this.jwtService.decode(token) as any;
+    
+    if (!decoded || !decoded.exp) {
+      return { message: 'Token already invalid' };
+    }
+
+    const expiresAt = new Date(decoded.exp * 1000);
+
+    await this.prisma.tokenBlacklist.create({
+      data: {
+        token: token,
+        expiresAt: expiresAt,
+      },
+    });
+
+    return { message: 'Sikeres kijelentkezés' };
 }
+}
+
